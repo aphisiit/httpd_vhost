@@ -1,0 +1,41 @@
+LoadModule proxy_module modules/modproxy.so
+LoadModule proxy_http_module modules/modproxyhttp.so
+
+<VirtualHost *:80>
+    # Your domain name
+    ServerName edoc.ktaxa.com
+
+    ProxyPreserveHost On
+
+    # The IP and port of the JBoss Enterprise Application Platform
+    # These represent the default values, if your HTTPD is on the same host
+    # as your JBoss Enterprise Application Platform managed domain or server
+
+    ProxyPass /middleware http://139.5.144.117:8080/middleware
+    ProxyPassReverse /middleware http://139.5.144.117:8080/middleware
+
+    # The location of the HTML files, and access control information
+    DocumentRoot "/data/httpd/edoc-front/www/html/"
+
+    # <Directory />
+    #    Options Includes Indexes FollowSymLinks MultiViews
+    #    AllowOverride None
+    # </Directory>
+
+    <Directory "/data/httpd/edoc-front/www/html/">
+        Options Includes Indexes FollowSymLinks MultiViews
+	DirectoryIndex index.html
+        Order allow,deny
+        Allow from all
+	AllowOverride None
+    	Require all granted
+
+	Header set Access-Control-Allow-Headers "ORIGIN, X-REQUESTED-WITH, CONTENT-TYPE"
+        Header set Access-Control-Allow-Methods "POST, GET, OPTIONS, PUT, DELETE"
+        Header set Access-Control-Allow-Origin "*"
+        Header set Access-Control-Allow-Credentials true
+        Header set Access-Control-Max-Age 60000
+    </Directory>
+</VirtualHost>
+
+# Alias /index.html /data/httpd/edoc.ktaxa.com/index.html
